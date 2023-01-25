@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_summary/home/home_item_data.dart';
+import 'package:flutter_summary/thread/multi_thread_page.dart';
+import 'package:flutter_summary/thread/single_thread_page.dart';
 
-import '../future/future_test_page.dart';
+final listData = <HomeItemData>[
+  HomeItemData("单线程模型及future使用", "single_thread"),
+  HomeItemData("多线程使用", "multi_thread"),
+];
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -13,7 +18,8 @@ class Home extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: {
-        "future_test": (context) => FutureTestPage(),
+        listData[0].route: (context) => const SingleThreadPage(),
+        listData[1].route: (context) => const MultiThreadPage(),
       },
       home: const HomeStates(),
     );
@@ -30,10 +36,6 @@ class HomeStates extends StatefulWidget {
 }
 
 class _HomeStates extends State<HomeStates> {
-  final listData = <HomeItemData>[
-    HomeItemData("单线程模型", "future_test"),
-  ];
-
   void _itemOnPressed(BuildContext context, HomeItemData data) {
     debugPrint("route:${data.route}");
     Navigator.pushNamed(context, data.route, arguments: data.title);
