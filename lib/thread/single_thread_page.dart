@@ -16,40 +16,6 @@ class SingleThreadPage extends StatefulWidget {
 class _SingleThreadPageState extends State<SingleThreadPage> {
   int syncFactorial(n) => n < 2 ? n : n * syncFactorial(n - 1);
 
-  void _computeFunc() async {
-    int a = await compute(syncFactorial, 4);
-    debugPrint("result $a");
-  }
-
-  Widget _computeWidget() {
-    return Column(
-      children: [
-        TextButton(onPressed: _computeFunc, child: Text("compute")),
-      ],
-    );
-  }
-
-  Isolate? _isolate;
-
-  void _isolateFunc() async {
-    ReceivePort receivePort = ReceivePort(); //创建管道
-    _isolate = await Isolate.spawn((sendPort) => sendPort.send("Hello"), receivePort.sendPort);
-    receivePort.listen((message) {
-      debugPrint('message:$message');
-      receivePort.close(); //关闭管道
-      _isolate?.kill(priority: Isolate.immediate); //杀死并发Isolate
-      _isolate = null;
-    });
-  }
-
-  Widget _isolateWidget() {
-    return Column(
-      children: [
-        TextButton(onPressed: _isolateFunc, child: const Text("Isolate")),
-      ],
-    );
-  }
-
   String _delayText = "await 与 async 只对调用上下文的函数有效，并不向上传递";
 
   Future<String> _delay() {
@@ -207,9 +173,6 @@ class _SingleThreadPageState extends State<SingleThreadPage> {
             Divider(color: Colors.primaries.first, thickness: 2.0),
             _asyncFuncWidget(),
             Divider(color: Colors.primaries.first, thickness: 2.0),
-            _isolateWidget(),
-            Divider(color: Colors.primaries.first, thickness: 2.0),
-            _computeWidget(),
           ],
         ),
       ),

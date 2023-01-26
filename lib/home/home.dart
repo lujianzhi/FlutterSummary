@@ -4,8 +4,8 @@ import 'package:flutter_summary/thread/multi_thread_page.dart';
 import 'package:flutter_summary/thread/single_thread_page.dart';
 
 final listData = <HomeItemData>[
-  HomeItemData("单线程模型及future使用", "single_thread"),
-  HomeItemData("多线程使用", "multi_thread"),
+  HomeItemData("单线程模型及future", "single_thread"),
+  HomeItemData("多线程", "multi_thread"),
 ];
 
 class Home extends StatelessWidget {
