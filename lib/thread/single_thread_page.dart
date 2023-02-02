@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:isolate';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SingleThreadPage extends StatefulWidget {
@@ -40,7 +38,10 @@ class _SingleThreadPageState extends State<SingleThreadPage> {
 
   Widget _asyncFuncWidget() {
     return Column(
-      children: [TextButton(onPressed: _asyncFunc, child: Text("异步函数")), Text(_delayText)],
+      children: [
+        TextButton(onPressed: _asyncFunc, child: const Text("异步函数")),
+        Text(_delayText)
+      ],
     );
   }
 
@@ -66,7 +67,9 @@ class _SingleThreadPageState extends State<SingleThreadPage> {
     }).then((_) => _updateResult("f5"));
 
 //声明了一个匿名Future，并注册了两个then。第一个then是一个Future
-    Future(() => _updateResult("f6")).then((_) => Future(() => _updateResult("f7"))).then((_) => _updateResult("f8"));
+    Future(() => _updateResult("f6"))
+        .then((_) => Future(() => _updateResult("f7")))
+        .then((_) => _updateResult("f8"));
 
 //声明了一个匿名Future
     Future(() => _updateResult("f9"));
@@ -150,7 +153,10 @@ class _SingleThreadPageState extends State<SingleThreadPage> {
 
   Widget _eventLoopWidget() {
     return Column(
-      children: <Widget>[const Text("EventLoop模型"), Image.asset("assets/img/event_loop.webp")],
+      children: <Widget>[
+        const Text("EventLoop模型"),
+        Image.asset("assets/img/event_loop.webp")
+      ],
     );
   }
 

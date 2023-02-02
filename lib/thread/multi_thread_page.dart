@@ -13,6 +13,52 @@ class MultiThreadPage extends StatefulWidget {
 }
 
 class MultiThreadState extends State<MultiThreadPage> {
+  _startIsolateV3() {
+    ReceivePort receivePort = ReceivePort();
+    Isolate.spawn(entryPoint, receivePort.sendPort);
+    receivePort.listen((message) {
+      if (message is SendPort) {
+        debugPrint("main接收到子isolate的发送器了,${Isolate.current.debugName}");
+        message.send("main给子isolate发送的消息");
+      } else {
+        debugPrint("$message,${Isolate.current.debugName}");
+      }
+    });
+  }
+
+  static entryPoint(SendPort sendPort) {
+    ReceivePort receivePort = ReceivePort();
+    receivePort.listen((message) {
+      debugPrint("子isolate接收到main的消息了：$message,${Isolate.current.debugName}");
+      sendPort.send("子isolate里面给main发的消息");
+    });
+    sendPort.send(receivePort.sendPort);
+  }
+
+  Widget _buildIsolateWidgetV3() {
+    return Column(
+      children: [TextButton(onPressed: _startIsolateV3, child: const Text("Isolate双向通信")), const Text("双向通信看logcat")],
+    );
+  }
+
+  List<TransformData> transformDataList = List<TransformData>.empty();
+
+  _startIsolateV2() async {
+    ReceivePort receivePort = ReceivePort();
+    Isolate isolate = await Isolate.spawn((sendPort) {
+      sendPort.send("length ${transformDataList.length}");
+    }, receivePort.sendPort);
+    receivePort.listen((message) {
+      debugPrint("message $message");
+    });
+  }
+
+  Widget _buildIsolateWidgetV2() {
+    return Column(
+      children: [TextButton(onPressed: _startIsolateV2, child: const Text("直接跨线程通信")), const Text("会报错")],
+    );
+  }
+
   String _computeDefault = "compute";
 
   _testCompute() async {
@@ -33,24 +79,36 @@ class MultiThreadState extends State<MultiThreadPage> {
   String _isolateDefault = "等待线程间通信";
 
   Isolate? isolate;
-  ReceivePort? port;
 
   _startIsolate() async {
-    port = ReceivePort();
+    ReceivePort port = ReceivePort();
 
-    isolate = await Isolate.spawn(_handleIsolate, port!.sendPort);
+    isolate = await Isolate.spawn(_handleIsolate, port.sendPort);
 
-    port!.listen((message) {
+    port.listen((message) {
       debugPrint("listen : ${Isolate.current.debugName}");
-      TransformData data = message as TransformData;
-      _isolateDefault = data.toString();
-      setState(() {});
+      if (message is List<TransformData>) {
+        debugPrint("message $message");
+      } else if (message is TransformData) {
+        _isolateDefault = message.toString();
+        setState(() {});
+      }
     });
+  }
+
+  static List<TransformData> getList() {
+    debugPrint("静态方法里随便打印点什么: ${Isolate.current.debugName}");
+    List<TransformData> transformDataList = [];
+    transformDataList.add(TransformData("ian1", "123"));
+    transformDataList.add(TransformData("ian2", "456"));
+    transformDataList.add(TransformData("ian3", "789"));
+    return transformDataList;
   }
 
   /// 需要是top-level的方法，或者static修饰的方法
   static _handleIsolate(SendPort? sendPort) {
     debugPrint("_handleIsolate : ${Isolate.current.debugName}");
+    sendPort?.send(getList());
     Timer.periodic(const Duration(seconds: 2), (timer) {
       debugPrint("发送 - ${Isolate.current.debugName}");
       TransformData data = TransformData("ian", DateTime.now().toString());
@@ -102,7 +160,15 @@ class MultiThreadState extends State<MultiThreadPage> {
     return Scaffold(
       appBar: AppBar(title: Text(ModalRoute.of(context)?.settings.arguments as String)),
       body: Column(
-        children: [_buildIsolateWidget(), _buildComputeWidget()],
+        children: [
+          _buildIsolateWidget(),
+          Divider(color: Colors.primaries.first, thickness: 2.0),
+          _buildIsolateWidgetV3(),
+          Divider(color: Colors.primaries.first, thickness: 2.0),
+          _buildIsolateWidgetV2(),
+          Divider(color: Colors.primaries.first, thickness: 2.0),
+          _buildComputeWidget(),
+        ],
       ),
     );
   }

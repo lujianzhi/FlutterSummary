@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_summary/home/home_item_data.dart';
+import 'package:flutter_summary/lifecycle/lifecycle_page.dart';
 import 'package:flutter_summary/thread/multi_thread_page.dart';
 import 'package:flutter_summary/thread/single_thread_page.dart';
 
 final listData = <HomeItemData>[
   HomeItemData("单线程模型及future", "single_thread"),
   HomeItemData("多线程", "multi_thread"),
+  HomeItemData("生命周期", "lifecycle_test"),
 ];
 
 class Home extends StatelessWidget {
@@ -20,6 +22,7 @@ class Home extends StatelessWidget {
       routes: {
         listData[0].route: (context) => const SingleThreadPage(),
         listData[1].route: (context) => const MultiThreadPage(),
+        listData[2].route: (context) => const Lifecycle(),
       },
       home: const HomeStates(),
     );
