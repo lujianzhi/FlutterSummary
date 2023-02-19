@@ -9,10 +9,10 @@ class MultiThreadPage extends StatefulWidget {
   const MultiThreadPage({super.key});
 
   @override
-  State<MultiThreadPage> createState() => MultiThreadState();
+  State<MultiThreadPage> createState() => _MultiThreadState();
 }
 
-class MultiThreadState extends State<MultiThreadPage> {
+class _MultiThreadState extends State<MultiThreadPage> {
   _startIsolateV3() {
     ReceivePort receivePort = ReceivePort();
     Isolate.spawn(entryPoint, receivePort.sendPort);

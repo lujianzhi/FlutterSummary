@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_summary/home/home_item_data.dart';
 import 'package:flutter_summary/lifecycle/lifecycle_page.dart';
+import 'package:flutter_summary/normal_widget/normal_widget_page.dart';
+import 'package:flutter_summary/route_jump/route_jump_page.dart';
 import 'package:flutter_summary/thread/multi_thread_page.dart';
 import 'package:flutter_summary/thread/single_thread_page.dart';
 
 final listData = <HomeItemData>[
-  HomeItemData("单线程模型及future", "single_thread"),
-  HomeItemData("多线程", "multi_thread"),
-  HomeItemData("生命周期", "lifecycle_test"),
+  HomeItemData("单线程模型及future", "single_thread", const SingleThreadPage()),
+  HomeItemData("多线程", "multi_thread", const MultiThreadPage()),
+  HomeItemData("生命周期", "lifecycle_test", const Lifecycle()),
+  HomeItemData("常用控件", "normal_widget", const NormalWidgetPage()),
+  HomeItemData("路由跳转", "route_jump", const RouteJumpPage()),
 ];
 
 class Home extends StatelessWidget {
@@ -20,9 +24,11 @@ class Home extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: {
-        listData[0].route: (context) => const SingleThreadPage(),
-        listData[1].route: (context) => const MultiThreadPage(),
-        listData[2].route: (context) => const Lifecycle(),
+        listData[0].route: (context) => listData[0].widget,
+        listData[1].route: (context) => listData[1].widget,
+        listData[2].route: (context) => listData[2].widget,
+        listData[3].route: (context) => listData[3].widget,
+        listData[4].route: (context) => listData[4].widget,
       },
       home: const HomeStates(),
     );

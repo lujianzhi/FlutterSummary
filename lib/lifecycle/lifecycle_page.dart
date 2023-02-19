@@ -4,10 +4,10 @@ class Lifecycle extends StatefulWidget {
   const Lifecycle({super.key});
 
   @override
-  State<StatefulWidget> createState() => LifecycleState();
+  State<StatefulWidget> createState() => _LifecycleState();
 }
 
-class LifecycleState extends State<Lifecycle> {
+class _LifecycleState extends State<Lifecycle> {
   String _initText = "初始化页面的生命周期调用：\n";
   String _setStateText = "setState后的生命周期调用：\n";
 
