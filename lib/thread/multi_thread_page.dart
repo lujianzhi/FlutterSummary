@@ -20,7 +20,7 @@ class _MultiThreadState extends State<MultiThreadPage> {
       try {
         if (message is SendPort) {
           debugPrint("main接收到子isolate的发送器了,${Isolate.current.debugName}");
-          message.send("main给子isolate发送的消息 ");
+          message.send("main给子isolate发送的消息");
         } else {
           debugPrint("$message,${Isolate.current.debugName}");
         }
