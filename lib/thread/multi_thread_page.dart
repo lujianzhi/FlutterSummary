@@ -17,11 +17,16 @@ class _MultiThreadState extends State<MultiThreadPage> {
     ReceivePort receivePort = ReceivePort();
     Isolate.spawn(entryPoint, receivePort.sendPort);
     receivePort.listen((message) {
-      if (message is SendPort) {
-        debugPrint("main接收到子isolate的发送器了,${Isolate.current.debugName}");
-        message.send("main给子isolate发送的消息");
-      } else {
-        debugPrint("$message,${Isolate.current.debugName}");
+      try {
+        if (message is SendPort) {
+          debugPrint("main接收到子isolate的发送器了,${Isolate.current.debugName}");
+          message.send("main给子isolate发送的消息");
+        } else {
+          debugPrint("$message,${Isolate.current.debugName}");
+        }
+        throw NullThrownError();
+      } catch (e, stackTrace) {
+        debugPrint("error:$e\nstackTrace:$stackTrace");
       }
     });
   }
@@ -37,7 +42,11 @@ class _MultiThreadState extends State<MultiThreadPage> {
 
   Widget _buildIsolateWidgetV3() {
     return Column(
-      children: [TextButton(onPressed: _startIsolateV3, child: const Text("Isolate双向通信")), const Text("双向通信看logcat")],
+      children: [
+        TextButton(
+            onPressed: _startIsolateV3, child: const Text("Isolate双向通信")),
+        const Text("双向通信看logcat")
+      ],
     );
   }
 
@@ -55,7 +64,10 @@ class _MultiThreadState extends State<MultiThreadPage> {
 
   Widget _buildIsolateWidgetV2() {
     return Column(
-      children: [TextButton(onPressed: _startIsolateV2, child: const Text("直接跨线程通信")), const Text("会报错")],
+      children: [
+        TextButton(onPressed: _startIsolateV2, child: const Text("直接跨线程通信")),
+        const Text("会报错")
+      ],
     );
   }
 
@@ -72,7 +84,10 @@ class _MultiThreadState extends State<MultiThreadPage> {
 
   Widget _buildComputeWidget() {
     return Column(
-      children: [TextButton(onPressed: _testCompute, child: const Text("compute")), Text(_computeDefault)],
+      children: [
+        TextButton(onPressed: _testCompute, child: const Text("compute")),
+        Text(_computeDefault)
+      ],
     );
   }
 
@@ -144,10 +159,13 @@ class _MultiThreadState extends State<MultiThreadPage> {
       children: [
         Row(
           children: [
-            TextButton(onPressed: _startIsolate, child: const Text("开启Isolate")),
+            TextButton(
+                onPressed: _startIsolate, child: const Text("开启Isolate")),
             TextButton(onPressed: _killIsolate, child: const Text("关闭Isolate")),
-            TextButton(onPressed: _pauseIsolate, child: const Text("暂停Isolate")),
-            TextButton(onPressed: _resumeIsolate, child: const Text("继续Isolate")),
+            TextButton(
+                onPressed: _pauseIsolate, child: const Text("暂停Isolate")),
+            TextButton(
+                onPressed: _resumeIsolate, child: const Text("继续Isolate")),
           ],
         ),
         Text(_isolateDefault),
@@ -158,7 +176,8 @@ class _MultiThreadState extends State<MultiThreadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(ModalRoute.of(context)?.settings.arguments as String)),
+      appBar: AppBar(
+          title: Text(ModalRoute.of(context)?.settings.arguments as String)),
       body: Column(
         children: [
           _buildIsolateWidget(),
