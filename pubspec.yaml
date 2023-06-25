@@ -50,6 +50,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   commitlint_cli: ^0.4.1
   husky: ^0.1.6
+  lint_staged: ^0.3.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -95,3 +96,6 @@ flutter:
 
   assets:
     - assets/img/
+
+lint_staged:
+  'lib/**.dart': dart format --fix && dart fix --apply

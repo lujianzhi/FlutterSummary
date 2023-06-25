@@ -54,7 +54,7 @@ class _MultiThreadState extends State<MultiThreadPage> {
 
   _startIsolateV2() async {
     ReceivePort receivePort = ReceivePort();
-    await Isolate.spawn((sendPort) {
+    Isolate a = await Isolate.spawn((sendPort) {
       sendPort.send("length ${transformDataList.length}");
     }, receivePort.sendPort);
     receivePort.listen((message) {
